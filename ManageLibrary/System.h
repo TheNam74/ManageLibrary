@@ -8,6 +8,7 @@ void initSystemFolder();
 
 void MainMenu(int status);
 void MenuFunction2(int status);
+void MenuFunction3(int status);
 
 
 //Ham chi cho phep nhap so 1 hoac 0

@@ -54,6 +54,7 @@ void MainMenu(int status) {
 				break;
 			case 53:
 				cout << "Quan ly sach" << endl;
+				MenuFunction3(status);
 				break;
 			case 54:
 				cout << "Lap phieu muon sach" << endl;
@@ -158,7 +159,6 @@ void MainMenu(int status) {
 		return;
 	}
 }
-
 void MenuFunction2(int status) {
 	char KeyBoard;
 	switch (status)
@@ -278,6 +278,126 @@ void MenuFunction2(int status) {
 		return;
 	}
 }
+void MenuFunction3(int status) {
+	char KeyBoard;
+	switch (status)
+	{
+	case 1:
+		do
+		{
+			clear();
+			cout << "1Xem danh sach cac sach" << endl;
+			cout << "2Them sach" << endl;
+			cout << "3Chinh sua thong tin sach" << endl;
+			cout << "4Xoa thong tin sach" << endl;
+			cout << "5Tim kiem sach theo ISBN" << endl;
+			cout << "6Tim kiem sach theo ten" << endl;
+			cout << "0Quay lai" << endl;
+			KeyBoard = _getch();
+			switch (KeyBoard)
+			{
+			case 49:
+				cout << "1Xem danh sach cac sach" << endl;
+				ViewBook();
+				break;
+			case 50:
+				cout << "2Them sach" << endl;
+				CreateBook();
+				break;
+			case 51:
+				cout << "3Chinh sua thong tin sach" << endl;
+				EditBookInfo();
+				break;
+			case 52:
+				cout << "4Xoa thong tin sach" << endl;
+				RemoveBook();
+				break;
+			case 53:
+				cout << "5Tim kiem sach theo ISBN" << endl;
+				FindBookByISBN();
+				break;
+			case 54:
+				cout << "6Tim kiem sach theo ten" << endl;
+				FindBookByName();
+				break;
+			default:
+				break;
+			}
+		} while (KeyBoard != 48);
+		return;
+	case 2:
+		do
+		{
+			cout << "1Xem danh sach cac sach" << endl;
+			cout << "2Them sach" << endl;
+			cout << "3Chinh sua thong tin sach" << endl;
+			cout << "4Xoa thong tin sach" << endl;
+			cout << "5Tim kiem sach theo ISBN" << endl;
+			cout << "6Tim kiem sach theo ten" << endl;
+			cout << "0Quay lai" << endl;
+			KeyBoard = _getch();
+			switch (KeyBoard)
+			{
+			case 49:
+				cout << "1Xem danh sach cac sach" << endl;
+				break;
+			case 50:
+				cout << "2Them sach" << endl;
+				break;
+			case 51:
+				cout << "3Chinh sua thong tin sach" << endl;
+				break;
+			case 52:
+				cout << "4Xoa thong tin sach" << endl;
+				break;
+			case 53:
+				cout << "5Tim kiem sach theo ISBN" << endl;
+				break;
+			case 54:
+				cout << "6Tim kiem sach theo ten" << endl;
+				break;
+			default:
+				break;
+			}
+		} while (KeyBoard != 48);
+		return;
+	case 3:
+		do
+		{
+			cout << "1Xem danh sach cac sach" << endl;
+			cout << "2Them sach" << endl;
+			cout << "3Chinh sua thong tin sach" << endl;
+			cout << "4Tim kiem sach theo ISBN" << endl;
+			cout << "5Tim kiem sach theo ten" << endl;
+			cout << "0Quay lai" << endl;
+			KeyBoard = _getch();
+			switch (KeyBoard)
+			{
+			case 49:
+				cout << "1Xem danh sach cac sach" << endl;
+				break;
+			case 50:
+				cout << "2Them sach" << endl;
+				break;
+			case 51:
+				cout << "3Chinh sua thong tin sach" << endl;
+				break;
+			case 52:
+				cout << "4Tim kiem sach theo ISBN" << endl;
+				break;
+			case 53:
+				cout << "5Tim kiem sach theo ten" << endl;
+				break;
+			default:
+				break;
+			}
+		} while (KeyBoard != 48);
+		return;
+	default:
+		return;
+	}
+}
+
 
 int input1num() {
 	char KeyBoard;
@@ -449,6 +569,20 @@ void DirectPanel(int function) {
 		cout << "2: NEXT";
 		gotoxy(44, 26);
 		cout << "3: CHINH SUA";
+		gotoxy(60, 26);
+		cout << "0: THOAT";
+		drawRectangle(36, 27, 40, 1, 3);
+		return;
+	}
+	else if (function == 34)
+	{
+		drawRectangle(36, 24, 40, 4, 3);
+		gotoxy(44, 25);
+		cout << "1: PREVIOUS";
+		gotoxy(60, 25);
+		cout << "2: NEXT";
+		gotoxy(44, 26);
+		cout << "3: XOA SACH";
 		gotoxy(60, 26);
 		cout << "0: THOAT";
 		drawRectangle(36, 27, 40, 1, 3);

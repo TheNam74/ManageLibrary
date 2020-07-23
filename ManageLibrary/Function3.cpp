@@ -182,6 +182,90 @@ void EditBookInfo() {
 	WriteDListBook(list);
 	textBgColor(7, 0);
 }
+void RemoveBook() {
+	DListBook list = ReadBook();
+	if (list.Head == NULL)
+		cout << "Khong co quyen sach nao nao";
+	char KeyBoard;
+	DNodeBook* p = list.Head;
+	ViewOneBook(p->book, 34);
+	int Count = 1;
+	do
+	{
+		KeyBoard = _getch();
+		if (KeyBoard == 49 && p->Prev != NULL)
+		{
+			Count--;
+			p = p->Prev;
+			ViewOneBook(p->book, 34);
+		}
+		else if (KeyBoard == 50 && p->Next != NULL)
+		{
+			Count++;
+			p = p->Next;
+			ViewOneBook(p->book, 34);
+		}
+		else if (KeyBoard == 51)
+		{
+			if (Count == 1)
+			{
+				if (p->Next != NULL) {//Xóa đầu và list có hơn 1 DNode
+					p = p->Next;
+					DeleteDNodeBookAtK(list, Count);
+				}
+				else {
+					DeleteDNodeBookAtK(list, Count);
+					break;
+				}
+			}//Xóa những chỗ khác
+			else {
+				p = p->Prev;
+				DeleteDNodeBookAtK(list, Count);
+				Count--;
+			}
+			ViewOneBook(p->book, 34);
+		}
+	} while (KeyBoard != 48);
+	WriteDListBook(list);
+	textBgColor(7, 0);
+}
+void FindBookByName() {
+	DListBook list = ReadBook();
+	char Name[45];
+	cout << "Nhap ten sach muon tim: ";
+	cin.getline(Name, 44);
+	for (DNodeBook* p = list.Head; p; p = p->Next) {
+		if (_stricmp(Name, p->book.Name) == 0)
+		{
+			ViewOneBook(p->book, 0);
+			_getch();
+			textBgColor(7, 0);
+			return;
+		}
+	}
+	cout << "Khong co sach nao ten " << Name<<" trong thu vien";
+	_getch();
+	clear();
+}
+void FindBookByISBN() {
+	DListBook list = ReadBook();
+	char ISBN[14];
+	cout << "Nhap ISBN cua sach muon tim: ";
+	cin.getline(ISBN, 14);
+	for (DNodeBook* p = list.Head; p; p = p->Next) {
+		if (atoi(ISBN)==atoi(p->book.ISBN))
+		{
+			ViewOneBook(p->book, 0);
+			_getch();
+			textBgColor(7, 0);
+			return;
+		}
+	}
+	cout << "Khong co sach nao co ISBN la: " << ISBN<< " trong thu vien";
+	_getch();
+	clear();
+}
+
 //utility
 void WriteBook(Book book) {
 	FILE* file;
@@ -291,5 +375,36 @@ void WriteDListBook(DListBook list) {
 	for (DNodeBook* p = list.Head; p; p = p->Next)
 		fwrite(&p->book, sizeof(Book), 1, file);
 	fclose(file);
+}
+void DeleteDNodeBookAtK(DListBook& list, int K) {
+	if (K == 1) {//delete head
+		DNodeBook* temp = list.Head;
+		list.Head = list.Head->Next;
+		if (list.Head != NULL)
+			list.Head->Prev = NULL;
+		delete temp;
+		return;
+	}
+	int Count = 1;
+	for (DNodeBook* p = list.Head; p; p = p->Next)
+	{
+		if (Count == K)
+		{
+			if (p->Next == NULL)//delete tail
+			{
+				list.Tail = list.Tail->Prev;
+				delete list.Tail->Next;
+				list.Tail->Next = NULL;
+				return;
+			}
+			else {
+				p->Next->Prev = p->Prev;
+				p->Prev->Next = p->Next;
+				delete p;
+				return;
+			}
+		}
+		Count++;
+	}
 }
 
