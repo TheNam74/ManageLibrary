@@ -12,7 +12,7 @@ void initSystemFolder()
 {
 	FILE* file;
 	_mkdir("books");
-	_mkdir("borrowedbook");
+	_mkdir("borrowcards");
 	_mkdir("readers");
 	_mkdir("user");
 	file = fopen("user/users.bin", "a");
@@ -520,6 +520,60 @@ bool IsAfter(Day D1, Day D2) {
 		return 1;
 	return 0;
 }
+int Duration(Day D1, Day D2)
+{
+	int day = 0;
+	while (D1.Date != D2.Date || D1.Month != D2.Month || D1.Year != D2.Year)
+	{
+		if (D1.Date == 31 && D1.Month == 12)
+		{
+			D1.Year++;
+			D1.Month = 1;
+			D1.Date = 0;
+		}
+		switch (D1.Month)
+		{
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			if (D1.Date == 31)
+			{
+				D1.Date = 0;
+				D1.Month++;
+			}
+			break;
+		case 2:
+			if (D1.Date == 28 && LeapYear(D1.Year) == 0)
+			{
+				D1.Date = 0;
+				D1.Month++;
+			}
+			if (D1.Date == 29 && LeapYear(D1.Year) == 1)
+			{
+				D1.Date = 0;
+				D1.Month++;
+			}
+			break;
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			if (D1.Date == 30)
+			{
+				D1.Date = 0;
+				D1.Month++;
+			}
+			break;
+		}
+		day++;
+		D1.Date++;
+	}
+	return day;
+}
 //Vẽ
 void DirectPanel(int function) {
 	if (function == 21)
@@ -596,5 +650,6 @@ void DirectPanel(int function) {
 		return;
 	}
 }
+void AlertPanel(char* title);
 
 

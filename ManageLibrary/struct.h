@@ -73,20 +73,20 @@ struct DListBook {
 	DNodeBook* Tail;
 };
 //Thẻ mượn 
-struct BorrowingCard {
-	unsigned Code;
+struct BorrowCard {
+	char Code[14];
 	char ISBN[14];
 	Day BorrowedDay;
 	Day ReturnDay;
 };
-struct DNodeBorrowingCard {
-	BorrowingCard borrowingcard;
-	DNodeBorrowingCard* Next;
-	DNodeBorrowingCard* Prev;
+struct DNodeBorrowCard {
+	BorrowCard borrowcard;
+	DNodeBorrowCard* Next;
+	DNodeBorrowCard* Prev;
 };
-struct DListBorrowingCard {
-	DNodeBorrowingCard* Head;
-	DNodeBorrowingCard* Tail;
+struct DListBorrowCard {
+	DNodeBorrowCard* Head;
+	DNodeBorrowCard* Tail;
 };
 
 

@@ -251,21 +251,90 @@ void FindBookByISBN() {
 	DListBook list = ReadBook();
 	char ISBN[14];
 	cout << "Nhap ISBN cua sach muon tim: ";
-	cin.getline(ISBN, 14);
-	for (DNodeBook* p = list.Head; p; p = p->Next) {
-		if (atoi(ISBN)==atoi(p->book.ISBN))
-		{
-			ViewOneBook(p->book, 0);
-			_getch();
-			textBgColor(7, 0);
-			return;
-		}
+	cin.getline(ISBN, 13);
+	DNodeBook *temp=FindBookByISBN(list, ISBN);
+	if (temp != NULL)
+	{
+		ViewOneBook(temp->book,0);
+		_getch();
+		textBgColor(7, 0);
+		return;
 	}
-	cout << "Khong co sach nao co ISBN la: " << ISBN<< " trong thu vien";
-	_getch();
+	else
+	{
+		cout << "Khong co sach nao co ISBN la: " << ISBN << " trong thu vien";
+		_getch();
+	}
 	clear();
 }
-
+void CreateBorrowCard() {
+	DListBook list = ReadBook();
+	DListReader list2 = ReadReader();
+	BorrowCard card;
+	GetCode_ISBN(card.Code, card.ISBN);
+	//check độc giả có tồn tại không
+	DNodeReader* preader;
+	for (preader = list2.Head; preader; preader = preader->Next) {
+		if (atoi(card.Code) == preader->reader.Code)
+			break;
+	}
+	if (preader == NULL)
+	{
+		cout << "Doc gia khong ton tai";
+		return;
+	}
+	//check sách có tồn tại và còn không
+	DNodeBook* pbook = FindBookByISBN(list, card.ISBN);
+	if (pbook != NULL && pbook->book.Borrowed == pbook->book.Number)
+	{
+		cout << "Quyen sach nay da bi muon het";
+		return;
+	}
+	else if (pbook == NULL)
+	{
+		cout << "Quyen sach nay khong ton tai";
+		return;
+	}
+	//ISBN va Code hợp lệ
+	card.BorrowedDay = GetCurrentDate();
+	card.ReturnDay = CountDaysAfter(card.BorrowedDay, 7);
+	pbook->book.Borrowed++;
+	WriteBorrowCard(card);
+	WriteDListBook(list);
+	cout << "Muon thanh cong";
+	textBgColor(7,0);
+}
+void ReturnBook() {
+	DListBorrowCard list = ReadBorrowCard();
+	DListBook list2 = ReadBook();
+	BorrowCard card;
+	GetCode_ISBN(card.Code, card.ISBN);
+	DNodeBorrowCard* p = list.Head;
+	int Count = 1;
+	for (p; p; p = p->Next) {
+		if (atoi(p->borrowcard.Code) == atoi(card.Code) && atoi(p->borrowcard.ISBN) == atoi(card.ISBN))
+		{
+			break;
+		}
+		Count++;
+	}
+	//Thẻ không tồn tại
+	if (p == NULL) {
+		cout << "the muon nay khong ton tai";
+		return;
+	}
+	else {
+		//giảm số lượng sách mượn trong books.bin và xóa đi thẻ mượn;
+		DNodeBook* temp = FindBookByISBN(list2, p->borrowcard.ISBN);
+		temp->book.Borrowed--;
+		//báo mất hoặc bị trễ hạn;
+		Day RealReturnDay = GetCurrentDate();
+		DeleteDNodeBorrowCardAtK(list, Count);
+		WriteDListBook(list2);
+		WriteDListBorrowCard(list);
+		cout << "Tra thanh cong";
+	}
+}
 //utility
 void WriteBook(Book book) {
 	FILE* file;
@@ -407,4 +476,120 @@ void DeleteDNodeBookAtK(DListBook& list, int K) {
 		Count++;
 	}
 }
+void GetCode_ISBN(char* Code, char* ISBN) {
+	drawRectangle(36, 5, 40,7, 3);
+	gotoxy(38, 6);
+	textBgColor(0, 3);
+	cout << "Ma doc gia: ";
+	drawRectangle(38, 7, 36, 1, 7);
+	gotoxy(38, 8);
+	textBgColor(0, 3);
+	cout << "ISBN sach muon muon: ";
+	drawRectangle(38, 9, 36, 1, 7);
+	textBgColor(0, 7);
+	//input
+	gotoxy(38, 7);
+	cin.getline(Code, 13);
+	gotoxy(38, 9);
+	cin.getline(ISBN, 13);
+}
+DNodeBook* FindBookByISBN(DListBook list, char* ISBN) {
+	for (DNodeBook* p = list.Head; p; p = p->Next) {
+		if (atoi(ISBN) == atoi(p->book.ISBN))
+			return p;
+	}
+	return NULL;
+}
 
+//Thẻ mượn sách
+void WriteBorrowCard(BorrowCard card) {
+	FILE* file;
+	file = fopen("BorrowCards/BorrowCards.bin", "ab");
+	fwrite(&card, sizeof(BorrowCard), 1, file);
+	fclose(file);
+	return;
+}
+DNodeBorrowCard* CreateBorrowCardNode(BorrowCard card) {
+	DNodeBorrowCard* Node = new DNodeBorrowCard;
+	Node->borrowcard = card;
+	Node->Next = NULL;
+	Node->Prev = NULL;
+	return Node;
+}
+void AddTailDListBorrowCard(DListBorrowCard& list, DNodeBorrowCard* Node) {
+	if (list.Head == NULL)
+	{
+		list.Head = Node;
+		list.Tail = Node;
+	}
+	else {
+		list.Tail->Next = Node;
+		Node->Prev = list.Tail;
+		list.Tail = Node;
+	}
+}
+DListBorrowCard ReadBorrowCard() {
+	DListBorrowCard list = { NULL,NULL };
+	FILE* file;
+	DNodeBorrowCard* Node;
+	BorrowCard card;
+	file = fopen("BorrowCards/BorrowCards.bin", "rb");
+	fseek(file, 0, SEEK_END);
+	int endfile = ftell(file);
+	fseek(file, 0, SEEK_SET);
+	while (ftell(file) != endfile) {
+		fread(&card, sizeof(card), 1, file);
+		Node = CreateBorrowCardNode(card);
+		AddTailDListBorrowCard(list, Node);
+	}
+	fclose(file);
+	return list;
+}
+void WriteDListBorrowCard(DListBorrowCard list) {
+	FILE* file;
+	file = fopen("BorrowCards/BorrowCards.bin", "wb");
+	for (DNodeBorrowCard* p = list.Head; p; p = p->Next)
+		fwrite(&p->borrowcard, sizeof(BorrowCard), 1, file);
+	fclose(file);
+}
+void DeleteDNodeBorrowCardAtK(DListBorrowCard& list, int K) {
+	if (K == 1) {//delete head
+		DNodeBorrowCard* temp = list.Head;
+		list.Head = list.Head->Next;
+		if (list.Head != NULL)
+			list.Head->Prev = NULL;
+		delete temp;
+		return;
+	}
+	int Count = 1;
+	for (DNodeBorrowCard* p = list.Head; p; p = p->Next)
+	{
+		if (Count == K)
+		{
+			if (p->Next == NULL)//delete tail
+			{
+				list.Tail = list.Tail->Prev;
+				delete list.Tail->Next;
+				list.Tail->Next = NULL;
+				return;
+			}
+			else {
+				p->Next->Prev = p->Prev;
+				p->Prev->Next = p->Next;
+				delete p;
+				return;
+			}
+		}
+		Count++;
+	}
+}
+void PrintDListBorrowCard(DListBorrowCard list)
+{
+	for (DNodeBorrowCard* p = list.Head; p; p = p->Next)
+	{
+		cout << "Code: " << p->borrowcard.Code << endl;
+		cout << "ISBN: " << p->borrowcard.ISBN << endl;
+		cout << "Ngay muon: "; printDay(p->borrowcard.BorrowedDay);
+		cout << "\nNgay tra du kien: "; printDay(p->borrowcard.ReturnDay);
+	}
+}

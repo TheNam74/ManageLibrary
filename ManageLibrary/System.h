@@ -33,6 +33,8 @@ bool LeapYear(int year);
 
 //Kiểm tra ngày D2 có sau ngày D1 hay không
 bool IsAfter(Day D1, Day D2);
+//Tính khoảng cách từ ngày D1 đến ngày D2
+int Duration(Day D1, Day D2);
 
 //-------Vẽ------------
 void DirectPanel(int function);
