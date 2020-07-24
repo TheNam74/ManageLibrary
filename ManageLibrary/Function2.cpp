@@ -308,7 +308,7 @@ void EditReaderInfo() {
 		cout << "Khong co doc gia nao";
 	char KeyBoard;
 	DNodeReader* p = list.Head;
-	ViewOneReader(p->reader, 24);
+	ViewOneReader(p->reader, 23);
 	int Count = 1;
 	do
 	{

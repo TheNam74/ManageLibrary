@@ -11,6 +11,7 @@ void FindBookByName();
 void FindBookByISBN();
 void CreateBorrowCard();
 void ReturnBook();
+void Statistic();
 // Utility Functions
 // viết sách vào books.bin
 void WriteBook(Book book);

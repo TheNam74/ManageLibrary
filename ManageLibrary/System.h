@@ -38,4 +38,7 @@ int Duration(Day D1, Day D2);
 
 //-------Vẽ------------
 void DirectPanel(int function);
+//Vẽ bảng thông báo ,0 ở trên, 1 ở dưới
+void AlertPanel(const char* title, int Color, int type);
+
 #endif

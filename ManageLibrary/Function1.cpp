@@ -43,24 +43,68 @@ void inputLogin(char* username, char* password) {
 }
 void CreateUser() {
 	User user;
-	cout << "Username: "<<endl;
-	cin.getline(user.Username,44);
-	cout << "Password: " << endl;
+	drawRectangle(36, 5, 40, 23, 3);
+	gotoxy(38, 6);
+	textBgColor(0, 3);
+	cout << "Username ";
+	drawRectangle(38, 7, 36, 1, 7);
+	gotoxy(38, 8);
+	textBgColor(0, 3);
+	cout << "Password ";
+	drawRectangle(38, 9, 36, 1, 7);
+
+	gotoxy(38, 10);
+	textBgColor(0, 3);
+	cout << "Ho va ten ";
+	drawRectangle(38, 11, 36, 1, 7);
+
+	gotoxy(38, 12);
+	textBgColor(0, 3);
+	cout << "Ngay sinh: dd/mm/yyyy ";
+	drawRectangle(38, 13, 36, 1, 7);
+
+	gotoxy(38, 14);
+	textBgColor(0, 3);
+	cout << "CMND ";
+	drawRectangle(38, 15, 36, 1, 7);
+
+	gotoxy(38, 16);
+	textBgColor(0, 3);
+	cout << "Dia chi ";
+	drawRectangle(38, 17, 36, 1, 7);
+
+	gotoxy(38, 18);
+	textBgColor(0, 3);
+	cout << "Gioi tinh: 1->Nam ; 0:->Nu";
+	drawRectangle(38, 19, 36, 1, 7);
+
+	gotoxy(38, 20);
+	textBgColor(0, 3);
+	cout << "Phan quyen:1->Quan li;0:->Chuyen vien";
+	drawRectangle(38, 21, 36, 1, 7);
+
+
+	DirectPanel(0);
+	textBgColor(0, 7);
+	gotoxy(38, 7);
+	cin.getline(user.Username, 44);
+	gotoxy(38, 9);
 	cin.getline(user.Password, 44);
-	cout << "Ho va ten: " << endl;
+	gotoxy(38, 11);
 	cin.getline(user.Fullname, 44);
-	cout << "Ngay sinh: dd/mm/yyyy" << endl;
+	gotoxy(38, 13);
 	user.DOB = inputDay();
-	cout << "CMND: " << endl;
+	gotoxy(38, 15);
 	cin.getline(user.ID, 44);
-	cout << "Dia chi: " << endl;
-	cin.getline(user.Address,100);
-	cout << "Gioi tinh: 1->Nam ; 0:->Nu " << endl;
+	gotoxy(38, 17);
+	cin.getline(user.Address, 44);
+	gotoxy(38, 19);
 	user.Sex = input1num();
+	gotoxy(38, 21);
+	user.Classification = inputnNum(1);
 	user.Active = 1;
-	cout << "Phan quyen: 1->Quan li ; 0:->Chuyen vien " << endl;
-	user.Classification = input1num();
 	//check tk xem tồn tại chưa rồi mới write
+	textBgColor(7, 0);
 	WriteUser(user);
 }
 void WriteUser(User user) {

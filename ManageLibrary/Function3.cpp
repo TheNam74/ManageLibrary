@@ -320,7 +320,7 @@ void ReturnBook() {
 	}
 	//Thẻ không tồn tại
 	if (p == NULL) {
-		cout << "the muon nay khong ton tai";
+		AlertPanel("THE MUON NAY KHONG TON TAI", 4, 0);
 		return;
 	}
 	else {
@@ -328,12 +328,110 @@ void ReturnBook() {
 		DNodeBook* temp = FindBookByISBN(list2, p->borrowcard.ISBN);
 		temp->book.Borrowed--;
 		//báo mất hoặc bị trễ hạn;
-		Day RealReturnDay = GetCurrentDate();
+		AlertPanel("1:TRA SACH \t 2:BAO MAT", 2, 0);
+		char KeyBoard;
+		do
+		{
+			KeyBoard = _getch();
+			if (KeyBoard == 50) {//mat sach
+				char TITLE[50] = "THANH TOAN: ";
+				char Pay[20];
+				_itoa(atoi(temp->book.Price) * 2, Pay, 10);
+				strcat(TITLE, Pay);
+				strcat(TITLE, " VND");
+				AlertPanel(TITLE, 4, 0);
+			}
+			else if (KeyBoard == 49)
+			{
+				Day RealReturnDay = GetCurrentDate();
+				if (IsAfter(p->borrowcard.ReturnDay, RealReturnDay)==1)//tra sai han
+				{
+					char TITLE[50] = "THANH TOAN TRA TRE HAN: ";
+					int LateDay = Duration(card.ReturnDay, RealReturnDay);
+					char Pay[20];
+					_itoa(5000 * LateDay, Pay, 10);
+					strcat(TITLE, Pay);
+					strcat(TITLE, " VND");
+					AlertPanel(TITLE, 4, 0);
+				}
+				else//tra dung han
+				{
+					AlertPanel("TRA DUNG HAN", 2, 0);
+				}
+
+			}
+		} while (KeyBoard != 49 && KeyBoard != 50);
+		
 		DeleteDNodeBorrowCardAtK(list, Count);
 		WriteDListBook(list2);
 		WriteDListBorrowCard(list);
-		cout << "Tra thanh cong";
 	}
+	Sleep(3000);
+}
+void Statistic() {
+	DListBook booklist = ReadBook();
+	DListBook booklist_category = { NULL,NULL };//6.2
+	DListReader readerlist = ReadReader();
+	DListBorrowCard cardlist = ReadBorrowCard();
+	int NumberofBook=0;//6.1
+	int NumberofBorrowedBook = 0;//6.5
+	int NumberofReader = 0;//6.3
+	int NumberofMaleReader = 0;//6.4
+	int NumberofFemaleReader = 0;//6.4
+	int NumberofLateReader = 0;//6.6
+	bool flag;
+	for (DNodeBook* p = booklist.Head; p;p=p->Next) {
+		flag = 0;
+		for (DNodeBook* p1 = booklist_category.Head; p1; p1 = p1->Next) {
+			if (strcmp(p1->book.Category, p->book.Category) == 0)//sách đã có nên cộng thêm số lượng
+			{
+				p1->book.Number += p->book.Number;
+				flag = 1;
+				break;
+			}
+		}
+		if (flag == 0)//chưa trùng nên bây giờ add vào danh sách
+		{
+			DNodeBook* temp = CreateBookNode(p->book);
+			AddTailDListBook(booklist_category, temp);
+		}
+		NumberofBorrowedBook += p->book.Borrowed;
+		NumberofBook += p->book.Number;
+	}
+	for (DNodeReader* p = readerlist.Head; p; p = p->Next) {
+		NumberofReader++;
+		p->reader.Sex == 1 ? NumberofMaleReader++ : NumberofFemaleReader++;
+	}
+	Day currentday = GetCurrentDate();
+	for (DNodeBorrowCard* p = cardlist.Head; p; p = p->Next) {
+		if (IsAfter(p->borrowcard.ReturnDay, currentday))
+		{
+			flag=1;
+			for (DNodeBorrowCard* p1 = cardlist.Head; p1 != p; p = p->Next)
+			{
+				if (strcmp(p->borrowcard.ISBN, p1->borrowcard.ISBN) == 0 && IsAfter(p1->borrowcard.ReturnDay, currentday) == 1)
+				{
+					flag = 0;
+					break;
+				}
+			}
+			if (flag == 1)
+				NumberofLateReader++;
+		}
+	}
+	cout << "THONG KE THU VIEN" << endl;
+	cout << "-So luong sach trong thu vien: " << NumberofBook << endl;
+	cout << "-So luong sach trong thu vien theo the loai: " << endl;
+	for (DNodeBook* p = booklist_category.Head; p; p = p->Next) {
+		cout <<"    +"<< p->book.Category << ": " << p->book.Number << " quyen" << endl;
+	}
+	cout << "-So luong doc gia: " << NumberofReader << endl;
+	cout << "-So luong doc gia la nam: " << NumberofMaleReader << endl;
+	cout << "-So luong doc gia la nu: " << NumberofFemaleReader << endl;
+	cout << "-So luong sach dang duoc muon: " << NumberofBorrowedBook << endl;
+	cout << "-So luong doc gia dang tre han: " << NumberofLateReader << endl;
+	cout << "BAM PHIM BAT KI DE QUAY LAI";
+	_getch();
 }
 //utility
 void WriteBook(Book book) {

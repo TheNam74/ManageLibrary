@@ -58,12 +58,15 @@ void MainMenu(int status) {
 				break;
 			case 54:
 				cout << "Lap phieu muon sach" << endl;
+				CreateBorrowCard();
 				break;
 			case 55:
 				cout << "Lap phieu tra sach" << endl;
+				ReturnBook();
 				break;
 			case 56:
 				cout << "Thong ke" << endl;
+				Statistic();
 				break;
 			default:
 				break;
@@ -650,6 +653,21 @@ void DirectPanel(int function) {
 		return;
 	}
 }
-void AlertPanel(char* title);
+void AlertPanel(const char* title,int Color,int type) {
+	int x =36+ (40 - strlen(title)) / 2;
+	if (type == 0) {//ở trên
+		drawRectangle(36, 7, 40, 3, Color);
+		gotoxy(x, 8.5);
+		textBgColor(0, 7);
+		cout <<title;
+	}
+	else if (type == 1) {
+		drawRectangle(36, 14, 40, 3, Color);
+		gotoxy(x, 15.5);
+		textBgColor(0, 7);
+		cout << title;
+	}
+	textBgColor(7, 0);
+}
 
 
