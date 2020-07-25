@@ -6,6 +6,7 @@ void WriteUsername(char* username) {
 	fclose(file);
 }
 int login(char* username, char* password) {
+	clear();
 	FILE* file;
 	if (strcmp(username, "admin") == 0 && strcmp(password, "admin") == 0) {
 		WriteUsername(username);
@@ -215,7 +216,7 @@ void ChangeUserPassword() {
 			}
 		}
 }
-void ChangeUserInfo(){
+void EditUserInfo(){
 	char Fullname[45];
 	Day DOB;
 	char ID[45];
@@ -228,10 +229,72 @@ void ChangeUserInfo(){
 	{
 		if (strcmp(username, p->user.Username) == 0)
 		{
-			cout << p->user.Fullname<<endl;
-			cout << "Thay doi: Nhan 1 ; Giu nguyen : Nhan 0" << endl;
-
-			return;
+			ViewOneUser(p->user);
+			char KeyBoard;
+			do
+			{
+				KeyBoard = _getch();
+				if (KeyBoard == 51)
+				{
+					drawRectangle(36, 5, 40, 23, 3);
+					gotoxy(38, 6);
+					textBgColor(0, 3);
+					cout << "Username ";
+					drawRectangle(38, 7, 36, 1, 7);
+					gotoxy(38, 7);
+					cout << p->user.Username;
+					gotoxy(38, 8);
+					textBgColor(0, 3);
+					cout << "Password ";
+					drawRectangle(38, 9, 36, 1, 7);
+					gotoxy(38, 9);
+					cout<<p->user.Password;
+					gotoxy(38, 10);
+					textBgColor(0, 3);
+					cout << "Ho va ten ";
+					drawRectangle(38, 11, 36, 1, 7);
+					gotoxy(38, 12);
+					textBgColor(0, 3);
+					cout << "Ngay sinh: dd/mm/yyyy ";
+					drawRectangle(38, 13, 36, 1, 7);
+					gotoxy(38, 14);
+					textBgColor(0, 3);
+					cout << "CMND ";
+					drawRectangle(38, 15, 36, 1, 7);
+					gotoxy(38, 16);
+					textBgColor(0, 3);
+					cout << "Dia chi ";
+					drawRectangle(38, 17, 36, 1, 7);
+					gotoxy(38, 18);
+					textBgColor(0, 3);
+					cout << "Gioi tinh: 1->Nam ; 0:->Nu";
+					drawRectangle(38, 19, 36, 1, 7);
+					gotoxy(38, 20);
+					textBgColor(0, 3);
+					cout << "Phan quyen:1->Quan li;0:->Chuyen vien";
+					drawRectangle(38, 21, 36, 1, 7);
+					gotoxy(38, 21);
+					cout << p->user.Classification;
+					//bat dau edit
+					DirectPanel(14);
+					textBgColor(0, 7);
+					gotoxy(38, 11);
+					cin.getline(p->user.Fullname, 44);
+					gotoxy(38, 13);
+					p->user.DOB = inputDay();
+					gotoxy(38, 15);
+					cin.getline(p->user.ID, 44);
+					gotoxy(38, 17);
+					cin.getline(p->user.Address, 44);
+					gotoxy(38, 19);
+					p->user.Sex = input1num();
+					//check valid
+					WriteDListUser(list);
+					AlertPanel("CHINH SUA THANH CONG", 2, 1);
+					Sleep(2500);
+					return;
+				}
+			} while (KeyBoard!=48);
 		}
 	}
 }
@@ -255,4 +318,65 @@ void ReadUserTemp() {
 void PrintDListUser(DListUser list) {
 	for (DNodeUser* p = list.Head; p; p = p->Next)
 		PrintUser(p->user);
+}
+void ViewOneUser(User user) {
+	drawRectangle(36, 5, 40, 23, 3);
+
+	gotoxy(38, 6);
+	textBgColor(0, 3);
+	cout << "Username ";
+	drawRectangle(38, 7, 36, 1, 7);
+	gotoxy(38, 7);
+	cout << user.Username;
+
+	gotoxy(38, 8);
+	textBgColor(0, 3);
+	cout << "Password ";
+	drawRectangle(38, 9, 36, 1, 7);
+	gotoxy(38, 9);
+	cout << user.Password;
+
+	gotoxy(38, 10);
+	textBgColor(0, 3);
+	cout << "Ho va ten ";
+	drawRectangle(38, 11, 36, 1, 7);
+	gotoxy(38, 11);
+	cout << user.Fullname;
+
+	gotoxy(38, 12);
+	textBgColor(0, 3);
+	cout << "Ngay sinh: dd/mm/yyyy ";
+	drawRectangle(38, 13, 36, 1, 7);
+	gotoxy(38, 13);
+	printDay(user.DOB);
+
+	gotoxy(38, 14);
+	textBgColor(0, 3);
+	cout << "CMND ";
+	drawRectangle(38, 15, 36, 1, 7);
+	gotoxy(38, 15);
+	cout << user.ID;
+
+	gotoxy(38, 16);
+	textBgColor(0, 3);
+	cout << "Dia chi ";
+	drawRectangle(38, 17, 36, 1, 7);
+	gotoxy(38, 17);
+	cout << user.Address;
+
+	gotoxy(38, 18);
+	textBgColor(0, 3);
+	cout << "Gioi tinh: 1->Nam ; 0:->Nu";
+	drawRectangle(38, 19, 36, 1, 7);
+	gotoxy(38, 19);
+	cout << user.Sex;
+
+	gotoxy(38, 20);
+	textBgColor(0, 3);
+	cout << "Phan quyen:1->Quan li;0:->Chuyen vien";
+	drawRectangle(38, 21, 36, 1, 7);
+	gotoxy(38, 21);
+	cout << user.Classification;
+	//bat dau edit
+	DirectPanel(14);
 }

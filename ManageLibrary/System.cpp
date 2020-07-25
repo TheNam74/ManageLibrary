@@ -7,7 +7,6 @@ bool isFileExists(const char* filename) {
 	}
 	return 0;
 }
-
 void initSystemFolder()
 {
 	FILE* file;
@@ -18,7 +17,6 @@ void initSystemFolder()
 	file = fopen("user/users.bin", "a");
 	fclose(file);
 }
-
 void MainMenu(int status) {
 	char KeyBoard;
 	switch (status)
@@ -77,38 +75,45 @@ void MainMenu(int status) {
 	case 2://manager
 		do
 		{
-			cout << "\n1Cap nhat thong tin" << endl;
+			clear();
+			cout << "1Cap nhat thong tin" << endl;
 			cout << "2Doi mat khau" << endl;
 			cout << "3Quan ly doc gia" << endl;
 			cout << "4Quan ly sach" << endl;
 			cout << "5Lap phieu muon sach" << endl;
 			cout << "6Lap phieu tra sach" << endl;
 			cout << "7Thong ke" << endl;
-			cout << "0Dang xuat\n-----------------" << endl;
+			cout << "0Dang xuat" << endl;
 			KeyBoard = _getch();
 			switch (KeyBoard)
 			{
 			case 49:
 				cout << "Cap nhat thong tin" << endl;
+				EditUserInfo();
 				break;
 			case 50:
 				cout << "Doi mat khau" << endl;
 				ChangeUserPassword();
 				break;
 			case 51:
+				cout << "3Quan ly doc gia" << endl;
 				MenuFunction2(status);
 				break;
 			case 52:
 				cout << "Quan li sach" << endl;
+				MenuFunction3(status);
 				break;
 			case 53:
 				cout << "Lap phieu muon sach" << endl;
+				CreateBorrowCard();
 				break;
 			case 54:
 				cout << "Lap phieu tra sach" << endl;
+				ReturnBook();
 				break;
 			case 55:
 				cout << "Thong ke" << endl;
+				Statistic();
 				break;
 			default:
 				break;
@@ -119,38 +124,43 @@ void MainMenu(int status) {
 	case 3://expert
 		do
 		{
-			cout << "\n1Cap nhat thong tin" << endl;
+			clear();
+			cout << "1Cap nhat thong tin" << endl;
 			cout << "2Doi mat khau" << endl;
 			cout << "3Quan ly doc gia" << endl;
 			cout << "4Quan ly sach" << endl;
 			cout << "5Lap phieu muon sach" << endl;
 			cout << "6Lap phieu tra sach" << endl;
 			cout << "7Thong ke" << endl;
-			cout << "0Dang xuat\n-----------------" << endl;
+			cout << "0Dang xuat" << endl;
 			KeyBoard = _getch();
 			switch (KeyBoard)
 			{
 			case 49:
-				cout << "Cap nhat thong tin" << endl;
+				cout << "1Cap nhat thong tin" << endl;
+				EditUserInfo();
 				break;
 			case 50:
-				cout << "Doi mat khau" << endl;
+				cout << "2Doi mat khau" << endl;
 				ChangeUserPassword();
 				break;
 			case 51:
 				MenuFunction2(status);
 				break;
 			case 52:
-				cout << "Quan li sach" << endl;
+				MenuFunction3(status);
 				break;
 			case 53:
 				cout << "Lap phieu muon sach" << endl;
+				CreateBorrowCard();
 				break;
 			case 54:
 				cout << "Lap phieu tra sach" << endl;
+				ReturnBook();
 				break;
 			case 55:
 				cout << "Thong ke" << endl;
+				Statistic();
 				break;
 			default:
 				break;
@@ -209,9 +219,10 @@ void MenuFunction2(int status) {
 			}
 		} while (KeyBoard != 48);
 		return;
-	case 2:
+	case 2://manager
 		do
 		{
+			clear();
 			cout << "1Xem danh sach cac doc gia" << endl;
 			cout << "2Them doc gia" << endl;
 			cout << "3Chinh sua thong tin doc gia" << endl;
@@ -224,30 +235,37 @@ void MenuFunction2(int status) {
 			{
 			case 49:
 				cout << "1Xem danh sach cac doc gia" << endl;
+				ViewReaders();
 				break;
 			case 50:
 				cout << "2Them doc gia" << endl;
+				CreateReader();
 				break;
 			case 51:
 				cout << "3Chinh sua thong tin doc gia" << endl;
+				EditReaderInfo();
 				break;
 			case 52:
 				cout << "4Xoa thong tin doc gia" << endl;
+				RemoveReader();
 				break;
 			case 53:
 				cout << "5Tim kiem doc gia theo CMND" << endl;
+				FindReaderByID();
 				break;
 			case 54:
 				cout << "6Tim kiem doc gia theo ten" << endl;
+				FindReaderByName();
 				break;
 			default:
 				break;
 			}
 		} while (KeyBoard != 48);
 		return;
-	case 3:
+	case 3://expert
 		do
 		{
+			clear();
 			cout << "1Xem danh sach cac doc gia" << endl;
 			cout << "2Them doc gia" << endl;
 			cout << "3Chinh sua thong tin doc gia" << endl;
@@ -259,18 +277,23 @@ void MenuFunction2(int status) {
 			{
 			case 49:
 				cout << "1Xem danh sach cac doc gia" << endl;
+				ViewReaders();
 				break;
 			case 50:
 				cout << "2Them doc gia" << endl;
+				CreateReader();
 				break;
 			case 51:
 				cout << "3Chinh sua thong tin doc gia" << endl;
+				EditReaderInfo();
 				break;
 			case 52:
 				cout << "4Tim kiem doc gia theo CMND" << endl;
+				FindReaderByID();
 				break;
 			case 53:
 				cout << "5Tim kiem doc gia theo ten" << endl;
+				FindReaderByName();
 				break;
 			default:
 				break;
@@ -331,6 +354,7 @@ void MenuFunction3(int status) {
 	case 2:
 		do
 		{
+			clear();
 			cout << "1Xem danh sach cac sach" << endl;
 			cout << "2Them sach" << endl;
 			cout << "3Chinh sua thong tin sach" << endl;
@@ -343,21 +367,27 @@ void MenuFunction3(int status) {
 			{
 			case 49:
 				cout << "1Xem danh sach cac sach" << endl;
+				ViewBook();
 				break;
 			case 50:
 				cout << "2Them sach" << endl;
+				CreateBook();
 				break;
 			case 51:
 				cout << "3Chinh sua thong tin sach" << endl;
+				EditBookInfo();
 				break;
 			case 52:
 				cout << "4Xoa thong tin sach" << endl;
+				RemoveBook();
 				break;
 			case 53:
 				cout << "5Tim kiem sach theo ISBN" << endl;
+				FindBookByISBN();
 				break;
 			case 54:
 				cout << "6Tim kiem sach theo ten" << endl;
+				FindBookByName();
 				break;
 			default:
 				break;
@@ -367,29 +397,20 @@ void MenuFunction3(int status) {
 	case 3:
 		do
 		{
-			cout << "1Xem danh sach cac sach" << endl;
-			cout << "2Them sach" << endl;
-			cout << "3Chinh sua thong tin sach" << endl;
-			cout << "4Tim kiem sach theo ISBN" << endl;
-			cout << "5Tim kiem sach theo ten" << endl;
+			clear();
+			cout << "1Tim kiem sach theo ISBN" << endl;
+			cout << "2Tim kiem sach theo ten" << endl;
 			cout << "0Quay lai" << endl;
 			KeyBoard = _getch();
 			switch (KeyBoard)
 			{
 			case 49:
-				cout << "1Xem danh sach cac sach" << endl;
+				cout << "1Tim kiem sach theo ISBN" << endl;
+				FindBookByISBN();
 				break;
 			case 50:
-				cout << "2Them sach" << endl;
-				break;
-			case 51:
-				cout << "3Chinh sua thong tin sach" << endl;
-				break;
-			case 52:
-				cout << "4Tim kiem sach theo ISBN" << endl;
-				break;
-			case 53:
-				cout << "5Tim kiem sach theo ten" << endl;
+				cout << "2Tim kiem sach theo ten" << endl;
+				FindBookByName();
 				break;
 			default:
 				break;
@@ -591,7 +612,7 @@ void DirectPanel(int function) {
 		drawRectangle(36, 27, 40, 1, 3);
 		return;
 	}
-	else if (function == 22)
+	/*else if (function == 22)
 	{
 		drawRectangle(36, 24, 40, 4, 3);
 		gotoxy(44, 25);
@@ -602,7 +623,7 @@ void DirectPanel(int function) {
 		cout << "0: LUU VA THOAT";
 		drawRectangle(36, 27, 40, 1, 3);
 		return;
-	}
+	}*/
 	else if (function == 24)
 	{
 		drawRectangle(36, 24, 40, 4, 3);
@@ -649,6 +670,24 @@ void DirectPanel(int function) {
 		drawRectangle(36, 24, 40, 4, 3);
 		gotoxy(60, 26);
 		cout << "0: THOAT";
+		drawRectangle(36, 27, 40, 1, 3);
+		return;
+	}
+	else if (function == 14) {
+		drawRectangle(36, 24, 40, 4, 3);
+		gotoxy(44, 26);
+		cout << "3: CHINH SUA";
+		gotoxy(60, 26);
+		cout << "0: THOAT";
+		drawRectangle(36, 27, 40, 1, 3);
+		return;
+	}
+	else if (function == 22)
+	{
+		char TITLE[] = "THEM DOC GIA";
+		int x = 36 + (40 - strlen(TITLE)) / 2;
+		gotoxy(x, 25.5);
+		cout << TITLE;
 		drawRectangle(36, 27, 40, 1, 3);
 		return;
 	}

@@ -1,6 +1,5 @@
 ﻿#include "Function2.h"
 void CreateReader() {
-	clear();
 	Reader reader;
 	// Lấy 1 số random bằng cách lấy số giây từ năm 1970
 	time_t now = time(0);
@@ -59,7 +58,7 @@ void CreateReader() {
 	drawRectangle(38, 23, 36, 1, 7);
 	gotoxy(38, 23);
 	printDay(reader.ExpirationDate);
-	DirectPanel(24);
+	DirectPanel(22);
 
 	textBgColor(0, 7);
 	gotoxy(38, 9);
@@ -77,6 +76,7 @@ void CreateReader() {
 	//vẽ 1 bảng alert lưu thành công
 	//check valid user
 	WriteReader(reader);
+	AlertPanel("TAO DOC GIA THANH CONG", 2, 1);
 	textBgColor(7, 0);
 }
 void WriteReader(Reader reader) {
@@ -302,7 +302,6 @@ void DeleteDNodeReaderAtK(DListReader &list,int K) {
 	}
 }
 void EditReaderInfo() {
-	clear();
 	DListReader list = ReadReader();
 	if (list.Head == NULL)
 		cout << "Khong co doc gia nao";

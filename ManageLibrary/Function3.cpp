@@ -1,6 +1,5 @@
 ﻿#include "Function3.h"
 void CreateBook() {
-	clear();
 	Book book;
 	drawRectangle(36, 5, 40, 23, 3);
 	gotoxy(38, 6);
@@ -63,7 +62,8 @@ void CreateBook() {
 	book.Number = inputnNum(1);
 	book.Borrowed = 0;
 	//check valid book
-	//vẽ 1 bảng alert lưu thành công
+	AlertPanel("THEM SACH THANH CONG",2,1);
+	Sleep(2500);
 	WriteBook(book);
 	textBgColor(7, 0);
 }
@@ -287,22 +287,21 @@ void CreateBorrowCard() {
 	DNodeBook* pbook = FindBookByISBN(list, card.ISBN);
 	if (pbook != NULL && pbook->book.Borrowed == pbook->book.Number)
 	{
-		cout << "Quyen sach nay da bi muon het";
-		return;
+		AlertPanel("QUYEN SACH NAY DA BI MUON HET", 4, 0);
 	}
 	else if (pbook == NULL)
 	{
-		cout << "Quyen sach nay khong ton tai";
-		return;
+		AlertPanel("QUYEN SACH NAY KHONG TON TAI", 4, 0);
 	}
-	//ISBN va Code hợp lệ
-	card.BorrowedDay = GetCurrentDate();
-	card.ReturnDay = CountDaysAfter(card.BorrowedDay, 7);
-	pbook->book.Borrowed++;
-	WriteBorrowCard(card);
-	WriteDListBook(list);
-	cout << "Muon thanh cong";
-	textBgColor(7,0);
+	else {//ISBN va Code hợp lệ
+		card.BorrowedDay = GetCurrentDate();
+		card.ReturnDay = CountDaysAfter(card.BorrowedDay, 7);
+		pbook->book.Borrowed++;
+		WriteBorrowCard(card);
+		WriteDListBook(list);
+		AlertPanel("MUON THANH CONG", 2, 0);
+	}
+	textBgColor(7, 0);
 }
 void ReturnBook() {
 	DListBorrowCard list = ReadBorrowCard();
@@ -343,11 +342,12 @@ void ReturnBook() {
 			}
 			else if (KeyBoard == 49)
 			{
+				//cout << "Tre hoac dung han";
 				Day RealReturnDay = GetCurrentDate();
 				if (IsAfter(p->borrowcard.ReturnDay, RealReturnDay)==1)//tra sai han
 				{
-					char TITLE[50] = "THANH TOAN TRA TRE HAN: ";
-					int LateDay = Duration(card.ReturnDay, RealReturnDay);
+					char TITLE[50] = "THANH TOAN TRE HAN: ";
+					int LateDay = Duration(p->borrowcard.ReturnDay, RealReturnDay);
 					char Pay[20];
 					_itoa(5000 * LateDay, Pay, 10);
 					strcat(TITLE, Pay);
@@ -358,7 +358,6 @@ void ReturnBook() {
 				{
 					AlertPanel("TRA DUNG HAN", 2, 0);
 				}
-
 			}
 		} while (KeyBoard != 49 && KeyBoard != 50);
 		
@@ -366,6 +365,7 @@ void ReturnBook() {
 		WriteDListBook(list2);
 		WriteDListBorrowCard(list);
 	}
+	textBgColor(7, 0);
 	Sleep(3000);
 }
 void Statistic() {

@@ -37,6 +37,8 @@ void GetUsername(char* username);
 //Đổi mật khẩu
 void ChangeUserPassword();
 
+void EditUserInfo();
+
 
 //------------------Các hàm tạm thời---------------------
 
@@ -45,5 +47,7 @@ void ReadUserTemp();
 
 //In ra tất cả phần tử trong DListUser
 void PrintDListUser(DListUser list);
+
+void ViewOneUser(User user);
 
 #endif
