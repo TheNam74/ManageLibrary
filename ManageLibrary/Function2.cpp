@@ -77,6 +77,98 @@ void CreateReader() {
 	//check valid user
 	WriteReader(reader);
 	AlertPanel("TAO DOC GIA THANH CONG", 2, 1);
+	Sleep(2500);
+	textBgColor(7, 0);
+}
+void EditReaderInfo() {
+	DListReader list = ReadReader();
+	if (list.Head == NULL)
+	{
+		cout << "CHUA CO DOC GIA NAO\nNHAN PHIM BAT KI DE QUAY LAI";
+		_getch();
+		return;
+	}
+	char KeyBoard;
+	DNodeReader* p = list.Head;
+	ViewOneReader(p->reader, 23);
+	int Count = 1;
+	do
+	{
+		KeyBoard = _getch();
+		if (KeyBoard == 49 && p->Prev != NULL)
+		{
+			Count--;
+			p = p->Prev;
+			ViewOneReader(p->reader, 23);
+		}
+		else if (KeyBoard == 50 && p->Next != NULL)
+		{
+			Count++;
+			p = p->Next;
+			ViewOneReader(p->reader, 23);
+		}
+		else if (KeyBoard == 51)
+		{
+			drawRectangle(38, 9, 36, 1, 7);
+
+			gotoxy(38, 10);
+			textBgColor(0, 3);
+			cout << "CMND: ";
+			drawRectangle(38, 11, 36, 1, 7);
+
+			gotoxy(38, 12);
+			textBgColor(0, 3);
+			cout << "Ngay sinh: ";
+			drawRectangle(38, 13, 36, 1, 7);
+
+			gotoxy(38, 14);
+			textBgColor(0, 3);
+			cout << "Gioi tinh: ";
+			drawRectangle(38, 15, 36, 1, 7);
+
+			gotoxy(38, 16);
+			textBgColor(0, 3);
+			cout << "Email: ";
+			drawRectangle(38, 17, 36, 1, 7);
+
+			gotoxy(38, 18);
+			textBgColor(0, 3);
+			cout << "Dia chi: ";
+			drawRectangle(38, 19, 36, 1, 7);
+
+			gotoxy(38, 20);
+			textBgColor(0, 3);
+			cout << "Ngay tao the: ";
+			drawRectangle(38, 21, 36, 1, 7);
+			gotoxy(38, 21);
+			printDay(p->reader.CreatedDate);
+			gotoxy(38, 22);
+			textBgColor(0, 3);
+			cout << "Ngay het han: ";
+			drawRectangle(38, 23, 36, 1, 7);
+			gotoxy(38, 23);
+			printDay(p->reader.ExpirationDate);
+			DirectPanel(23);
+			textBgColor(0, 7);
+			gotoxy(38, 9);
+			cin.getline(p->reader.Fullname, 44);
+			gotoxy(38, 11);
+			cin.getline(p->reader.ID, 44);
+			gotoxy(38, 13);
+			p->reader.DOB = inputDay();
+			gotoxy(38, 15);
+			p->reader.Sex = input1num();
+			gotoxy(38, 17);
+			cin.getline(p->reader.Email, 44);
+			gotoxy(38, 19);
+			cin.getline(p->reader.Address, 44);
+			WriteDListReader(list);
+			AlertPanel("CHINH SUA THONG TIN THANH CONG", 2, 1);
+			Sleep(2500);
+			textBgColor(7, 0);
+			return;
+		}
+	} while (KeyBoard != 48);
 	textBgColor(7, 0);
 }
 void WriteReader(Reader reader) {
@@ -145,6 +237,12 @@ void WriteDListReader(DListReader list) {
 }
 void ViewReaders() {
 	DListReader list = ReadReader();
+	if(list.Head==NULL)
+	{
+		cout << "CHUA CO DOC GIA NAO\nNHAN PHIM BAT KI DE QUAY LAI";
+		_getch();
+		return;
+	}
 	char KeyBoard;
 	DNodeReader* p = list.Head;
 	ViewOneReader(p->reader,21);
@@ -226,7 +324,11 @@ void ViewOneReader(Reader reader,int Function) {
 void RemoveReader() {
 	DListReader list = ReadReader();
 	if (list.Head == NULL)
-		cout << "Khong co doc gia nao";
+	{
+		cout << "CHUA CO DOC GIA NAO\nNHAN PHIM BAT KI DE QUAY LAI";
+		_getch();
+		return;
+	}
 	char KeyBoard;
 	DNodeReader* p = list.Head;
 	ViewOneReader(p->reader, 24);
@@ -253,15 +355,21 @@ void RemoveReader() {
 				if(p->Next!=NULL){//Xóa đầu và list có hơn 1 DNode
 					p = p->Next;
 					DeleteDNodeReaderAtK(list, Count);
+					AlertPanel("XOA THANH CONG", 2, 1);
+					Sleep(2000);
 				}
 				else {
 					DeleteDNodeReaderAtK(list, Count);
+					AlertPanel("XOA THANH CONG", 2, 1);
+					Sleep(2000);
 					break;
 				}
 			}//Xóa những chỗ khác
 			else {
 				p = p->Prev;
 				DeleteDNodeReaderAtK(list, Count);
+				AlertPanel("XOA THANH CONG", 2, 1);
+				Sleep(2000);
 				Count--;
 			}
 			ViewOneReader(p->reader, 24);
@@ -301,89 +409,7 @@ void DeleteDNodeReaderAtK(DListReader &list,int K) {
 		Count++;
 	}
 }
-void EditReaderInfo() {
-	DListReader list = ReadReader();
-	if (list.Head == NULL)
-		cout << "Khong co doc gia nao";
-	char KeyBoard;
-	DNodeReader* p = list.Head;
-	ViewOneReader(p->reader, 23);
-	int Count = 1;
-	do
-	{
-		KeyBoard = _getch();
-		if (KeyBoard == 49 && p->Prev != NULL)
-		{
-			Count--;
-			p = p->Prev;
-			ViewOneReader(p->reader, 23);
-		}
-		else if (KeyBoard == 50 && p->Next != NULL)
-		{
-			Count++;
-			p = p->Next;
-			ViewOneReader(p->reader, 23);
-		}
-		else if (KeyBoard == 51)
-		{
-			drawRectangle(38, 9, 36, 1, 7);
-			
-			gotoxy(38, 10);
-			textBgColor(0, 3);
-			cout << "CMND: ";
-			drawRectangle(38, 11, 36, 1, 7);
-			
-			gotoxy(38, 12);
-			textBgColor(0, 3);
-			cout << "Ngay sinh: ";
-			drawRectangle(38, 13, 36, 1, 7);
-			
-			gotoxy(38, 14);
-			textBgColor(0, 3);
-			cout << "Gioi tinh: ";
-			drawRectangle(38, 15, 36, 1, 7);
-			
-			gotoxy(38, 16);
-			textBgColor(0, 3);
-			cout << "Email: ";
-			drawRectangle(38, 17, 36, 1, 7);
-			
-			gotoxy(38, 18);
-			textBgColor(0, 3);
-			cout << "Dia chi: ";
-			drawRectangle(38, 19, 36, 1, 7);
-			
-			gotoxy(38, 20);
-			textBgColor(0, 3);
-			cout << "Ngay tao the: ";
-			drawRectangle(38, 21, 36, 1, 7);
-			gotoxy(38, 21);
-			printDay(p->reader.CreatedDate);
-			gotoxy(38, 22);
-			textBgColor(0, 3);
-			cout << "Ngay het han: ";
-			drawRectangle(38, 23, 36, 1, 7);
-			gotoxy(38, 23);
-			printDay(p->reader.ExpirationDate);
-			DirectPanel(23);
-			textBgColor(0, 7);
-			gotoxy(38, 9);
-			cin.getline(p->reader.Fullname, 44);
-			gotoxy(38, 11);
-			cin.getline(p->reader.ID, 44);
-			gotoxy(38, 13);
-			p->reader.DOB = inputDay();
-			gotoxy(38, 15);
-			p->reader.Sex = input1num();
-			gotoxy(38, 17);
-			cin.getline(p->reader.Email, 44);
-			gotoxy(38, 19);
-			cin.getline(p->reader.Address, 44);
-		}
-	} while (KeyBoard != 48);
-	WriteDListReader(list);
-	textBgColor(7, 0);
-}
+
 void FindReaderByName() {
 	DListReader list = ReadReader();
 	char FullName[45];
@@ -420,5 +446,6 @@ void FindReaderByID() {
 	_getch();
 	clear();
 }
-//-------hàm tạm-------
+//-------UTILITY--------
+
 

@@ -49,5 +49,9 @@ void ReadUserTemp();
 void PrintDListUser(DListUser list);
 
 void ViewOneUser(User user);
+//Kiểm tra valid user, type 1:lúc edit, type 0:lúc tạo
+bool isValidUser(User user, int type);
+//Nhập mật khẩu
+void inputPassword(char Password[45]);
 
 #endif

@@ -42,7 +42,7 @@ void CreateBook() {
 	drawRectangle(38, 21, 36, 1, 7);
 
 
-	DirectPanel(24);
+	DirectPanel(32);
 	textBgColor(0, 7);
 	gotoxy(38, 7);
 	cin.getline(book.ISBN, 14);
@@ -59,17 +59,25 @@ void CreateBook() {
 	gotoxy(38, 19);
 	cin.getline(book.Price, 44);
 	gotoxy(38, 21);
-	book.Number = inputnNum(1);
+	book.Number = inputnNum(10);
 	book.Borrowed = 0;
-	//check valid book
-	AlertPanel("THEM SACH THANH CONG",2,1);
+	if (isValidBook(book,0))
+	{
+		WriteBook(book);
+		AlertPanel("THEM SACH THANH CONG", 2, 1);
+	}
 	Sleep(2500);
-	WriteBook(book);
 	textBgColor(7, 0);
 }
 void ViewBook() {
 	DListBook list = ReadBook();
 	char KeyBoard;
+	if (list.Head == NULL)
+	{
+		cout << "CHUA CO QUYEN SACH NAO\nNHAN PHIM BAT KI DE QUAY LAI";
+		_getch();
+		return;
+	}
 	DNodeBook* p = list.Head;
 	ViewOneBook(p->book, 21);
 	do
@@ -89,10 +97,13 @@ void ViewBook() {
 	textBgColor(7, 0);
 }
 void EditBookInfo() {
-	clear();
 	DListBook list = ReadBook();
 	if (list.Head == NULL)
-		cout << "Khong co quyen sach nao";
+	{
+		cout << "CHUA CO QUYEN SACH NAO NAO\nNHAN PHIM BAT KI DE QUAY LAI";
+		_getch();
+		return;
+	}
 	char KeyBoard;
 	DNodeBook* p = list.Head;
 	ViewOneBook(p->book, 23);
@@ -176,16 +187,26 @@ void EditBookInfo() {
 			gotoxy(38, 19);
 			cin.getline(p->book.Price, 101);
 			gotoxy(38, 21);
-			p->book.Number = inputnNum(2);
+			p->book.Number = inputnNum(10);
+			if (isValidBook(p->book, 0)) {
+				WriteDListBook(list);
+				AlertPanel("CHINH SUA THANH CONG", 2, 1);
+			}
+			Sleep(2500);
+			textBgColor(7, 0);
+			return;
 		}
 	} while (KeyBoard != 48);
-	WriteDListBook(list);
 	textBgColor(7, 0);
 }
 void RemoveBook() {
 	DListBook list = ReadBook();
 	if (list.Head == NULL)
-		cout << "Khong co quyen sach nao nao";
+	{
+		cout << "CHUA CO QUYEN SACH NAO\nNHAN PHIM BAT KI DE QUAY LAI";
+		_getch();
+		return;
+	}
 	char KeyBoard;
 	DNodeBook* p = list.Head;
 	ViewOneBook(p->book, 34);
@@ -212,15 +233,21 @@ void RemoveBook() {
 				if (p->Next != NULL) {//Xóa đầu và list có hơn 1 DNode
 					p = p->Next;
 					DeleteDNodeBookAtK(list, Count);
+					AlertPanel("XOA THANH CONG", 2, 1);
+					Sleep(2000);
 				}
 				else {
 					DeleteDNodeBookAtK(list, Count);
+					AlertPanel("XOA THANH CONG", 2, 1);
+					Sleep(2000);
 					break;
 				}
 			}//Xóa những chỗ khác
 			else {
 				p = p->Prev;
 				DeleteDNodeBookAtK(list, Count);
+				AlertPanel("XOA THANH CONG", 2, 1);
+				Sleep(2000);
 				Count--;
 			}
 			ViewOneBook(p->book, 34);
@@ -280,7 +307,9 @@ void CreateBorrowCard() {
 	}
 	if (preader == NULL)
 	{
-		cout << "Doc gia khong ton tai";
+		AlertPanel("DOC GIA KHONG TON TAI", 4, 0);
+		Sleep(2500);
+		textBgColor(7, 0);
 		return;
 	}
 	//check sách có tồn tại và còn không
@@ -301,6 +330,7 @@ void CreateBorrowCard() {
 		WriteDListBook(list);
 		AlertPanel("MUON THANH CONG", 2, 0);
 	}
+	Sleep(2500);
 	textBgColor(7, 0);
 }
 void ReturnBook() {
@@ -320,11 +350,19 @@ void ReturnBook() {
 	//Thẻ không tồn tại
 	if (p == NULL) {
 		AlertPanel("THE MUON NAY KHONG TON TAI", 4, 0);
+		Sleep(2500);
 		return;
 	}
 	else {
 		//giảm số lượng sách mượn trong books.bin và xóa đi thẻ mượn;
 		DNodeBook* temp = FindBookByISBN(list2, p->borrowcard.ISBN);
+		//Nếu sách đã bị xóa
+		if (temp == NULL)
+		{
+			AlertPanel("THONG TIN SACH DA BI XOA",4,0);
+			Sleep(2500);
+			return;
+		}
 		temp->book.Borrowed--;
 		//báo mất hoặc bị trễ hạn;
 		AlertPanel("1:TRA SACH \t 2:BAO MAT", 2, 0);
@@ -369,6 +407,8 @@ void ReturnBook() {
 	Sleep(3000);
 }
 void Statistic() {
+	clear();
+	cout << "------------THONG KE THU VIEN SACH-----------"<<endl;
 	DListBook booklist = ReadBook();
 	DListBook booklist_category = { NULL,NULL };//6.2
 	DListReader readerlist = ReadReader();
@@ -409,7 +449,7 @@ void Statistic() {
 			flag=1;
 			for (DNodeBorrowCard* p1 = cardlist.Head; p1 != p; p = p->Next)
 			{
-				if (strcmp(p->borrowcard.ISBN, p1->borrowcard.ISBN) == 0 && IsAfter(p1->borrowcard.ReturnDay, currentday) == 1)
+				if (strcmp(p->borrowcard.Code, p1->borrowcard.Code) == 0 && IsAfter(p1->borrowcard.ReturnDay, currentday) == 1)
 				{
 					flag = 0;
 					break;
@@ -430,7 +470,7 @@ void Statistic() {
 	cout << "-So luong doc gia la nu: " << NumberofFemaleReader << endl;
 	cout << "-So luong sach dang duoc muon: " << NumberofBorrowedBook << endl;
 	cout << "-So luong doc gia dang tre han: " << NumberofLateReader << endl;
-	cout << "BAM PHIM BAT KI DE QUAY LAI";
+	cout << "---------BAM PHIM BAT KI DE QUAY LAI-------------";
 	_getch();
 }
 //utility
@@ -582,7 +622,7 @@ void GetCode_ISBN(char* Code, char* ISBN) {
 	drawRectangle(38, 7, 36, 1, 7);
 	gotoxy(38, 8);
 	textBgColor(0, 3);
-	cout << "ISBN sach muon muon: ";
+	cout << "ISBN sach : ";
 	drawRectangle(38, 9, 36, 1, 7);
 	textBgColor(0, 7);
 	//input
@@ -597,6 +637,28 @@ DNodeBook* FindBookByISBN(DListBook list, char* ISBN) {
 			return p;
 	}
 	return NULL;
+}
+bool isValidBook(Book book,int type) {
+	if (type == 0)
+	{
+		DListBook list = ReadBook();
+		for (DNodeBook* p = list.Head; p; p = p->Next)
+			if (strcmp(book.ISBN, p->book.ISBN) == 0) {
+				AlertPanel("ISBN DA TON TAI", 4, 1);
+				return 0;
+			}
+	}
+	if (isAllNumberString(book.ISBN) == 0)
+	{
+		AlertPanel("NHAP ISBN LOI", 4, 1);
+		return 0;
+	}
+	if (isAllNumberString(book.Price) == 0)
+	{
+		AlertPanel("NHAP GIA TIEN LOI", 4, 1);
+		return 0;
+	}
+	return 1;
 }
 
 //Thẻ mượn sách

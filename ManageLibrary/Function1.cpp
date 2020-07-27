@@ -22,13 +22,11 @@ int login(char* username, char* password) {
 		if (strcmp(username, user.Username) == 0 && strcmp(password, user.Password) == 0)
 			if (user.Classification == 1)
 			{
-				cout << "Quan li" << endl;
 				WriteUsername(username);
 				return 2;
 			}
 				
 			else {
-				cout << "Chuyen vien" << endl;
 				WriteUsername(username);
 				return 3;
 			}
@@ -37,10 +35,11 @@ int login(char* username, char* password) {
 	return 0;
 }
 void inputLogin(char* username, char* password) {
+	clear();
 	cout << "Nhap ten dang nhap: " << endl;
 	cin.getline(username, 44);
 	cout << "Nhap mat khau: " << endl;
-	cin.getline(password, 44);
+	inputPassword(password);
 }
 void CreateUser() {
 	User user;
@@ -90,7 +89,7 @@ void CreateUser() {
 	gotoxy(38, 7);
 	cin.getline(user.Username, 44);
 	gotoxy(38, 9);
-	cin.getline(user.Password, 44);
+	inputPassword(user.Password);
 	gotoxy(38, 11);
 	cin.getline(user.Fullname, 44);
 	gotoxy(38, 13);
@@ -104,9 +103,12 @@ void CreateUser() {
 	gotoxy(38, 21);
 	user.Classification = inputnNum(1);
 	user.Active = 1;
-	//check tk xem tồn tại chưa rồi mới write
+	if (isValidUser(user,0)) {
+		WriteUser(user);
+		AlertPanel("TAO NGUOI DUNG THANH CONG", 2, 1);
+	}
 	textBgColor(7, 0);
-	WriteUser(user);
+	Sleep(2500);
 }
 void WriteUser(User user) {
 	FILE* file;
@@ -184,34 +186,38 @@ void ChangeUserPassword() {
 	char newPassword[45];
 	char ConfirmPassword[45];
 	cout << "Nhap mat khau hien tai: ";
-	cin.getline(currentPassword, 44);
+	inputPassword(currentPassword);
+	cout << endl;
 	cout << "Nhap mat khau moi: ";
-	cin.getline(newPassword, 44);
+	inputPassword(newPassword);
+	cout << endl;
 	cout << "Nhap lai mat khau moi: ";
-	cin.getline(ConfirmPassword, 44);
+	inputPassword(ConfirmPassword);
 	if (strcmp(newPassword, ConfirmPassword) != 0)
 	{
-		cout << "Mat khau moi khong trung khop";
+		cout << "\nMat khau moi khong trung khop";
+		_getch();
 		return;
 	}
 	DListUser list = ReadUser();
 	//Lấy username của tài khoản đang sử dụng
 	GetUsername(username);
-	cout << "\nDoi mat khau cua tai khoan: " << username<<endl;
 	DNodeUser* p;
 	for ( p = list.Head; p; p = p->Next)
 		if (strcmp(username, p->user.Username) == 0)
 		{
 			if (strcmp(p->user.Password, currentPassword) != 0)
 			{
-				cout << "Nhap sai mat khau cu";
+				cout << "\nNhap sai mat khau cu";
+				_getch();
 				return;
 			}
 			else
 			{
 				strcpy(p->user.Password, newPassword);
 				WriteDListUser(list);
-				cout << "Da doi mat khau";
+				cout << "\nDa doi mat khau thanh cong";
+				_getch();
 				return;
 			}
 		}
@@ -248,7 +254,7 @@ void EditUserInfo(){
 					cout << "Password ";
 					drawRectangle(38, 9, 36, 1, 7);
 					gotoxy(38, 9);
-					cout<<p->user.Password;
+					cout << "***********";
 					gotoxy(38, 10);
 					textBgColor(0, 3);
 					cout << "Ho va ten ";
@@ -288,37 +294,21 @@ void EditUserInfo(){
 					cin.getline(p->user.Address, 44);
 					gotoxy(38, 19);
 					p->user.Sex = input1num();
-					//check valid
-					WriteDListUser(list);
-					AlertPanel("CHINH SUA THANH CONG", 2, 1);
+					//check valid 
+					if (isValidUser(p->user,1)) {
+						WriteDListUser(list);
+						AlertPanel("CHINH SUA THANH CONG", 2, 1);
+					}
 					Sleep(2500);
 					return;
 				}
 			} while (KeyBoard!=48);
 		}
 	}
+	textBgColor(7, 0);
 }
-//------------------Các hàm tạm thời---------------------
-void ReadUserTemp() {
-	FILE* file;
-	User user;
-	int Count = 1;
-	file = fopen("user/users.bin", "rb");
-	fseek(file, 0, SEEK_END);
-	int endfile = ftell(file);
-	fseek(file, 0, SEEK_SET);
-	while (ftell(file) != endfile) {
-		cout << "------" << Count++ << "-----" << endl;
-		fread(&user, sizeof(User), 1, file);
-		cout << "------" << ftell(file) << "-----" << endl;
-		PrintUser(user);
-	}
-	fclose(file);
-}
-void PrintDListUser(DListUser list) {
-	for (DNodeUser* p = list.Head; p; p = p->Next)
-		PrintUser(p->user);
-}
+
+//---------UTILITY-------------
 void ViewOneUser(User user) {
 	drawRectangle(36, 5, 40, 23, 3);
 
@@ -334,7 +324,7 @@ void ViewOneUser(User user) {
 	cout << "Password ";
 	drawRectangle(38, 9, 36, 1, 7);
 	gotoxy(38, 9);
-	cout << user.Password;
+	cout << "***********";
 
 	gotoxy(38, 10);
 	textBgColor(0, 3);
@@ -379,4 +369,66 @@ void ViewOneUser(User user) {
 	cout << user.Classification;
 	//bat dau edit
 	DirectPanel(14);
+}
+bool isValidUser(User user,int type) {
+	if(type==0)
+	{
+		DListUser list = ReadUser();
+		for (DNodeUser* p = list.Head; p; p = p->Next)
+			if (strcmp(user.Username, p->user.Username) == 0) {
+				AlertPanel("USERNAME DA TON TAI", 4, 1);
+				return 0;
+			}
+	}
+	
+	if (isAllNumberString(user.ID) == 0)
+	{
+		AlertPanel("NHAP CMND LOI", 4, 1);
+		return 0;
+	}
+	return 1;
+}
+void inputPassword(char Password[45]) {
+	char KeyBoard;
+	int pos = 0;
+	do
+	{
+		KeyBoard = _getch();
+		if (KeyBoard == 13)
+			break;
+		else if (KeyBoard >= 48 && KeyBoard <= 57|| KeyBoard >= 65 && KeyBoard <= 90|| KeyBoard >= 97 && KeyBoard <= 122)
+		{
+			Password[pos++] = KeyBoard;
+			cout << "*";
+		}
+		else if (KeyBoard == 8&&pos>0)
+		{
+			pos--;
+			gotoxy(whereX(), whereY()+1);
+			cout << " ";
+			gotoxy(whereX() , whereY()+1);
+		}
+	} while (pos <= 44);
+	Password[pos] = '\0';
+}
+//------------------Các hàm tạm thời---------------------
+void ReadUserTemp() {
+	FILE* file;
+	User user;
+	int Count = 1;
+	file = fopen("user/users.bin", "rb");
+	fseek(file, 0, SEEK_END);
+	int endfile = ftell(file);
+	fseek(file, 0, SEEK_SET);
+	while (ftell(file) != endfile) {
+		cout << "------" << Count++ << "-----" << endl;
+		fread(&user, sizeof(User), 1, file);
+		cout << "------" << ftell(file) << "-----" << endl;
+		PrintUser(user);
+	}
+	fclose(file);
+}
+void PrintDListUser(DListUser list) {
+	for (DNodeUser* p = list.Head; p; p = p->Next)
+		PrintUser(p->user);
 }

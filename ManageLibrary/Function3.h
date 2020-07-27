@@ -30,6 +30,10 @@ void DeleteDNodeBookAtK(DListBook& list, int K);
 void GetCode_ISBN(char* Code, char* ISBN);
 //Tìm sách thông qua ISBN trả về DNodeBook, không tồn tại thì trả về NULL
 DNodeBook* FindBookByISBN(DListBook list, char* ISBN);
+//Kiểm tra book hợp lệ type:1 lúc edit,0: lúc tạo 
+bool isValidBook(Book book, int type);
+
+
 
 //thẻ mượn sách
 void WriteBorrowCard(BorrowCard card);
